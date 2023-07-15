@@ -2,3 +2,9 @@
     border:none;
     box-shadow: none;
   }
+
+  .btn-close:focus {
+    outline: 0;
+    box-shadow: none;
+    opacity: 1;
+  }

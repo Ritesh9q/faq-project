@@ -1,7 +1,6 @@
 # faq-project
 
-This is an assignment task by techzero company. This FAQ project has search, edit and update faq's features.
-I've used vue 3, vuex and bootstrap to complete the challenge.
+This is an assignment task by techzora company. This FAQ project has add, delete, search, edit faq's features. I've used vue 3, vuex and bootstrap to complete the challenge.
 
 ## Recommended IDE Setup
 
