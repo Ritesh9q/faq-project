@@ -5,7 +5,7 @@
             <div style="background-color:black;" class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" id="close" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                <form action="">
@@ -15,7 +15,7 @@
             </div> 
             <div class="modal-footer">
                 <button  @click="reset" class="btn btn-secondary">Reset</button> 
-                <button  @click="addItem" type="button" class="btn btn-primary" :class="[{disabled:notEmpty}]">{{btnText}}</button>
+                <button  @click="actionType" type="button" class="btn btn-primary" :class="[{disabled:notEmpty}]">{{btnText}}</button>
             </div>
             </div>
         </div> 
@@ -30,12 +30,12 @@ export default {
     data(){ 
         return{
             question:'',
-            answer:'',
-            modalId:''
+            answer:''
         }
     },
+
     computed: {
-        ...mapState(['modalName','editId']),
+        ...mapState(['modalName','selectedFaq']), 
         modalTitle() {
             return this.modalName === 'add' ? 'Add New FAQ' : 'Update FAQ';
         },
@@ -51,26 +51,29 @@ export default {
             }
         }, 
     },
-    watch:{
-        if (this.editId !== null) {
-  const storedItems = localStorage.getItem('faqs');
-  const faqs = storedItems ? JSON.parse(storedItems) : [];
-  const faq = faqs.find(item => item.id === this.editId);
-  console.log("faq",faq);
-  this.question = faq.que;
-  this.answer = faq.ans;
-}
 
+    watch:{
+        selectedFaq() {
+            if( this.modalName=== 'update' && this.selectedFaq !== null){
+                this.question = this.selectedFaq.que;
+                this.answer = this.selectedFaq.ans;
+            }else{
+                this.question = '';
+                this.answer = ''; 
+            }
+       },
+     
     },
+ 
    
     methods:{
-        ...mapActions(['setModal','getItem']),
+        ...mapActions(['setModal','updateFAQ','clearSelectedFaq','addFAQ']),
         addItem() {
         const faq = {
             que: this.question,
             ans: this.answer,
-        };
-        this.$store.dispatch('addFAQ', faq);
+        }; 
+        this.addFAQ(faq);
         this.question = '';
         this.answer = '';  
         },
@@ -78,6 +81,22 @@ export default {
             this.answer='',
             this.question=''
         },
+        actionType(){
+            if(this.btnText === 'Add'){
+                this.addItem();
+                document.getElementById('close').click();
+            }
+            if(this.btnText === 'Update'){
+                const faq = {
+                    id: this.selectedFaq.id,
+                    que: this.question,
+                    ans: this.answer,
+                }; 
+                this.updateFAQ(faq);
+                this.clearSelectedFaq();
+                document.getElementById('close').click();
+            }
+        }
         
 
     },
@@ -99,9 +118,6 @@ export default {
     .modal-header,
     .modal-footer {
         background-color: #f8f9fa;
-    }
-    .modal-header {
-    background-color: #f8f9fa;
     }
 
 </style>

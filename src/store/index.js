@@ -7,17 +7,13 @@ const store = createStore({
        faqs: [],
        modalName:'', 
        searchQuery: '',
-       editId:null
+       selectedFaq: null  
     };
   },
   mutations: {
     addFAQ(state, faq) {
       state.faqs.push(faq);
       localStorage.setItem('faqs', JSON.stringify(state.faqs));
-
-    },
-    loadFAQs(state, faqs) {
-      state.faqs = faqs; 
     },
    setModal(state,type){
       state.modalName=type;
@@ -41,36 +37,46 @@ const store = createStore({
       state.faqs = state.faqs.filter(faq => faq.id !== id);
       localStorage.setItem('faqs', JSON.stringify(state.faqs));
     },
-    setItemId(state,id){
-      state.editId = id; 
-    }
+    setSelectedFaq(state, faq) {
+      state.selectedFaq = faq;
+    },
+    clearSelectedFaq(state) {
+      state.selectedFaq = null;
+    },
+    updateFAQ(state, updatedFAQ) {
+      const index = state.faqs.findIndex(faq => faq.id === updatedFAQ.id);
+      if (index !== -1) {
+        state.faqs.splice(index, 1, updatedFAQ);
+        localStorage.setItem('faqs', JSON.stringify(state.faqs));
+      }
+    },
   },
+
   actions: {
 
     addFAQ({ commit, state }, faq) {
       const newId = Math.max(...state.faqs.map(faq => faq.id), 0) + 1;
       const newFAQ = { ...faq, id: newId };
       commit('addFAQ', newFAQ);
- 
     }, 
-    loadFAQs({ commit }) {
-      const faqs = JSON.parse(localStorage.getItem('faqs')) || [];
-      commit('loadFAQs', faqs);
-    },
     setModal({commit},type){
       commit('setModal',type);
     },
     deleteFAQ({ commit }, id) {
       commit('deleteFAQ', id);
     },
-    setItemId({commit},id){
-      commit('setItemId', id);
-    }
+    selectFaq({ commit }, faq) {
+      commit('setSelectedFaq', faq);
+    },
+    clearSelectedFaq({ commit }) {
+      commit('clearSelectedFaq');
+    },
+    updateFAQ({commit},faq){
+      commit('updateFAQ',faq);
+    } 
   },
   getters: {
-    getFAQs(state) {
-      return state.faqs;
-    },
+
     getFAQs: state => {
       if (state.searchQuery) {
         const query = state.searchQuery.toLowerCase();
@@ -83,13 +89,6 @@ const store = createStore({
       state.faqs = storedFAQs ? JSON.parse(storedFAQs) : [];
       return state.faqs;
     },
-    editItem(state) {
-      return state.editId;
-    },
-   
-    getModalType(state){
-      return state.modalName;
-    }
 
   }
 });
