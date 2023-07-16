@@ -17,7 +17,10 @@
                 <button class="btn btn-outline-danger m-1" @click="deleteFaq(faq.id)"><i class="bi bi-trash"></i></button> 
                 </span>
             </div> 
-       </div> 
+       </div>  
+       <center>
+       <p class="mt-5" v-if="filteredFAQs.length === 0">No Data Found.</p>
+       </center>
          <ModalForm />   
     </div> 
     
