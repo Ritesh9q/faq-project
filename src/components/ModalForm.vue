@@ -67,7 +67,7 @@ export default {
  
    
     methods:{
-        ...mapActions(['setModal','updateFAQ','clearSelectedFaq','addFAQ','deleteFAQ']),
+        ...mapActions(['setModal','updateFAQ','clearSelectedFaq','addFAQ']),
         addItem() {
         const faq = {
             que: this.question,
@@ -80,7 +80,6 @@ export default {
         reset(){
            this.answer = this.selectedFaq.ans;
            this.question = this.selectedFaq.que; 
-
         },
         actionType(){
             if(this.btnText === 'Add'){
